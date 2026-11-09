@@ -1,0 +1,89 @@
+name: Publish Skill
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install CLIs
+        run: |
+          npm i -g clawhub
+          curl -fsSL https://skillhub.cn/install/install.sh | bash -s -- --cli-only
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Bump patch version in SKILL.md
+        run: |
+          python3 << 'PY'
+          import re
+          p = 'SKILL.md'
+          c = open(p, encoding='utf-8').read()
+          m = re.search(r'version:\s*"(\d+)\.(\d+)\.(\d+)"', c)
+          if not m:
+              raise SystemExit('SKILL.md missing semver version field')
+          a, b, d = (int(x) for x in m.groups())
+          c = c.replace(m.group(0), 'version: "%d.%d.%d"' % (a, b, d + 1), 1)
+          open(p, 'w', encoding='utf-8').write(c)
+          print('bumped to %d.%d.%d' % (a, b, d + 1))
+          PY
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add SKILL.md
+          if git diff --cached --quiet; then
+            echo "no version change"
+          else
+            git commit -m "chore: bump skill version [skip ci]"
+            git push
+          fi
+
+      - name: Read version from SKILL.md
+        run: |
+          VER=$(python3 -c 'import re;print(re.search(r"version: \"([^\"]+)\"", open("SKILL.md", encoding="utf-8").read()).group(1))')
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
+
+      - name: Publish to ClawHub
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+        run: |
+          if [ -z "$CLAWHUB_TOKEN" ]; then
+            echo "CLAWHUB_TOKEN not set, skip ClawHub publish"
+            exit 0
+          fi
+          clawhub login --token "$CLAWHUB_TOKEN" --label "github-ci"
+          clawhub publish . \
+            --slug bilei-team \
+            --name "避雷选品团.skill" \
+            --version "$VERSION" \
+            --topics "避雷,反投毒,购物,选品,多Agent" \
+            --source-repo "${{ github.repository }}" \
+            --source-commit "${{ github.sha }}" \
+            --source-ref "${{ github.ref_name }}" \
+            --changelog "auto publish from github"
+
+      - name: Publish to SkillHub
+        env:
+          SKILLHUB_KEY: ${{ secrets.SKILLHUB_KEY }}
+        run: |
+          if [ -z "$SKILLHUB_KEY" ]; then
+            echo "SKILLHUB_KEY not set, skip SkillHub publish"
+            exit 0
+          fi
+          skillhub login --key "$SKILLHUB_KEY" --host https://api.skillhub.cn
+          rm -rf /tmp/skh-pkg && mkdir -p /tmp/skh-pkg
+          rsync -a --exclude LICENSE --exclude .git ./ /tmp/skh-pkg/
+          skillhub publish /tmp/skh-pkg --changelog "auto publish from github"
