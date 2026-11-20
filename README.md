@@ -28,6 +28,16 @@
 
 13 类品类的门槛规格 / 关键指标 / 垂类信源档案 + 表外品类兜底四问 + 非实物类（服务/软件/保险/课程）专属规则——换品类不用改规则。
 
+## 与单 Agent 版一致的基础能力（v6.1 补齐）
+
+- **标准排查**：查强制国标/认证 + 有无更严标准（须给指标数值对比）+ 结论落款"遵循哪个标准"，无遵循证据不得作首选
+- **制造商审计**：自产/代工/贴牌四模式 + 按厂名查代工厂黑历史，纯代工/贴牌降一级
+- **信源黑名单**：官方名单随包 + 用户自定义黑名单（更新技能不丢），名单优先 + 特征兜底；一句话即可增删
+- **二手保值率**：闲鱼近期成交 → 二手价/折价/保值率，作横评辅助项
+- **版本自检**：调用时查一次新版本，仅末尾一行提示，不打断主流程
+
+> 本版独有的更强能力（预算分级、三层输出、分享版、信源可信度七类审计）保持不变。
+
 ## 三条纪律（与避雷.skill 一脉相承）
 
 1. **推荐强度 ≤ 证据强度**，证据的强度不能超过信源的强度
@@ -53,6 +63,8 @@ npx skills add zhashushu/bilei-team-skill
 
 - `scripts/premium_decision.py` —— 溢价-风险对价计算器（零依赖，Python 3.8+）：TCO/EAC、临界故障率 p\*、溢价 ROI、公允价格上限、QPR
 - `scripts/manmanbuy_price.py` —— 慢慢买免登录比价（仅实物电商）：一条命令拿爆料价 + 商城 + 日期 + 价格标签
+- `scripts/custom_blocklist.py` —— 用户自定义信源黑名单（add / remove / list / check / path），名单存 `~/.bilei/user-blocklist.md`，更新技能不丢
+- `scripts/check_update.py` —— 版本自检（多源回退 + 24h 缓存 + 失败静默）
 
 ```bash
 python3 scripts/premium_decision.py selftest   # 自检
@@ -72,10 +84,14 @@ bilei-team-skill/
 │   ├── output_template.md          # 三层输出模板（零层/一层/二层 + 分享版）
 │   ├── cases.md                    # 翻车案例集（规则由来）
 │   ├── changelog.md                # 完整变更史
-│   └── case_example.json           # 定量脚本输入示例
+│   ├── case_example.json           # 定量脚本输入示例
+│   ├── manufacturer-audit.md       # 制造商/供应链审计（自产/代工/贴牌）
+│   └── source-blocklist.md         # 官方信源黑名单（随包分发）
 └── scripts/
     ├── premium_decision.py         # 溢价-风险对价计算器
-    └── manmanbuy_price.py          # 慢慢买免登录比价
+    ├── manmanbuy_price.py          # 慢慢买免登录比价
+    ├── custom_blocklist.py         # 用户自定义信源黑名单
+    └── check_update.py             # 版本自检
 ```
 
 ## 关于准确度的实话

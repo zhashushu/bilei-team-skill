@@ -5,6 +5,22 @@
 
 ## 变更记录
 
+**v6.1（2026-11-20）· 与单 Agent 版（避雷.skill v4.3.6）能力对齐**
+
+本版长期独立演进（预算分级、三层输出、信源可信度审计等比单 Agent 版更强），但漏了单 Agent 版后加的五项基础能力。本次一次性补齐，不改动本版已有的强项。
+
+| # | 补齐能力 | 落在哪 | 单 Agent 版对应 |
+|---|---|---|---|
+| ① | **标准排查升级**：查强制国标/认证 + 有无更严标准（须指标数值对比，禁搬商家话术）+ 结论落款遵循哪个标准 + 无遵循证据不得首选 | `SKILL.md` Step 0-b/Step 2-0.5；`agent1_blacklist.md` 检索模板 4a–4c + 输出契约 `stricter_standards`/`product_compliance`；`output_template.md` 遵循标准行 | 扫雷第 1 条 |
+| ② | **制造商/供应链审计**：自产/自研+代工/纯代工公模/贴牌授权四模式；按**厂名**查代工厂黑历史；纯代工/贴牌 → 推荐强度降一级并写明；查不到不得默认自产 | 新增 `references/manufacturer-audit.md`；`SKILL.md` Step 0-b/Step 2-0.5；Agent 1 prompt；输出契约 `product_compliance` | 扫雷第 11 条 + `manufacturer-audit.md` |
+| ③ | **信源黑名单**：官方名单随包 + 用户名单（`~/.bilei/user-blocklist.md`，更新不丢），名单优先 + 特征兜底；`custom_blocklist.py` add/remove/list/check/path | 新增 `references/source-blocklist.md`、`scripts/custom_blocklist.py`；`SKILL.md` Step 0-b + Agent 1 prompt | 扫雷第 12 条 |
+| ④ | **版本自检**：`check_update.py`（GitHub raw→jsDelivr 多源、24h 缓存、失败静默、退出码恒 0）；仅末尾一行提示，不进第一屏 | 新增 `scripts/check_update.py`（仓库指向改为 bilei-team）；`SKILL.md` 顶部「版本自检」节 | v4.3.2/4.3.3 |
+| ⑤ | **二手保值率**：闲鱼近期成交 → 二手价/折价金额/保值率，辅助项不单独推荐；样本<3 写"二手数据不足" | `agent4_price_intel.md` 输出契约 `resale`；`SKILL.md` Step 3.5 | 扫雷优势对比第 3 条 |
+
+**本版已有的更强能力保持不变**：预算 S/A/B/C 分级、三层输出（零层一屏）、分享版 md、四角色隔离、信源可信度七类审计（L3a/b/c）、市场成熟度 unproven 判定、投毒指数——这些单 Agent 版没有，不动。
+
+---
+
 **v6.0（2026-11-05）· 当前版本｜预算分级 + 三层输出 + 分享版，三件事合并**
 
 同一天内用户三次反馈，逐次修正后统一为 6.0，并把长期错位的技能名与版本号对齐（此前标题写「4.0」、Changelog 已到 5.x，属历史遗留）。
