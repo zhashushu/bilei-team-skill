@@ -2,18 +2,44 @@
 
 中文 ｜ [English](README_EN.md)
 
-> **一句话，四路并行，全审计裁决。**
-> 这是 [避雷.skill](https://github.com/zhashushu/bilei-skill) 的**多 Agent 重型版**——日常快问快答用轻快版，大件和安全关键品类用本版。
+> **四角色协作，按证据裁决；查不到就写查不到。**
+> 这是 [避雷.skill](https://github.com/zhashushu/bilei-skill) 的**多 Agent 重型版**——日常快问快答用轻快版，大件和安全关键品类用本版。没有可靠选项就说「目前没有」。
 
-## 和避雷.skill 的分工
+## 安装
 
-| | [避雷.skill](https://github.com/zhashushu/bilei-skill) | **避雷选品团.skill（本仓库）** |
+打开你正在用的 Agent（Claude Code / Cursor / Codex / WorkBuddy 等），对它说：**「帮我安装这个 skill：https://github.com/zhashushu/bilei-team-skill」**
+
+或者用通用 CLI 安装器：
+
+```bash
+npx skills add zhashushu/bilei-team-skill
+```
+
+也可以手动：把整个文件夹放进你所用 Agent 的技能目录（如 `~/.claude/skills/`、`~/.workbuddy/skills/`）。文件夹名可以随便改，界面显示的技能名以 SKILL.md 里的 `display_name` 为准。
+
+## 和普通 AI 推荐的差别
+
+- 行政处罚、抽检不合格、召回公告优先；型号级 L1 原文命中，剥夺推荐资格。
+- SGS / TÜV 送测记 L3b，不因机构 logo 升成 L2。
+- 同一篇通稿无论转载多少次，只计 1 个信源。
+- 四个角色隔离：取证的不许推荐，算数的不许下结论；价格情报官在裁决之后才派出。
+- 没有可靠选项就说「目前没有」。
+
+## 轻快版 / 重型版
+
+| | [避雷.skill](https://github.com/zhashushu/bilei-skill) 轻快版 | **避雷选品团.skill（本仓库）** 重型版 |
 |---|---|---|
 | 形态 | 单 Agent，无编排依赖 | 多 Agent 协作（4 个角色） |
 | 成本 | 约十分之一 | 全套手册加载 × 4 线 |
 | 适合 | 日常购物、快问快答、低价小件 | >¥2000 大件、安全关键品类、要完整审计链路 |
 
 **怎么选**：平时用避雷.skill；买空调、热水器、儿童安全座椅、电动车这类「错一次代价大」的东西，或者想要逐条可反查的完整审计报告时，换本版。
+
+## 用法
+
+对它说品类或需求即可，例如：「想买个扫地机器人」「3000 以内 4K 显示器剪辑用」「这型号值不值得买」。
+
+若这份说明对你有用，欢迎给仓库点个 star，也欢迎在 issue 里点名下一个品类。
 
 ## 它派四个角色干活
 
@@ -43,21 +69,6 @@
 1. **推荐强度 ≤ 证据强度**，证据的强度不能超过信源的强度
 2. **不编数据**——查不到就写查不到，没有可靠选项就说「目前没有」
 3. **利益冲突只削评价层，不削事实层**——收钱的评测源，弃用它的结论，保留它的拆解照片和实测数据
-
-## 安装
-
-只需两步：
-
-1. 打开你正在用的 Agent（Claude Code / Cursor / Codex / WorkBuddy 等）
-2. 对它说：**「帮我安装这个 skill：https://github.com/zhashushu/bilei-team-skill」**
-
-或者用通用 CLI 安装器：
-
-```bash
-npx skills add zhashushu/bilei-team-skill
-```
-
-也可以手动：把整个文件夹放进你所用 Agent 的技能目录（如 `~/.claude/skills/`、`~/.workbuddy/skills/`）。文件夹名可以随便改，界面显示的技能名以 SKILL.md 里的 `display_name` 为准。
 
 ## 定量脚本
 
